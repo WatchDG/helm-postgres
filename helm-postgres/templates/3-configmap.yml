@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.application }}
+  namespace: {{ .Values.namespace }}
+data:
+  pg_hba.conf: |
+    #   TYPE        DATABASE      USER    ADDRESS       METHOD
+        local       all           all                   trust
+        host        all           all     all           md5
+  postgresql.conf: |
+    data_directory = '/var/lib/postgresql/data/pgdata'
+    hba_file = '/var/lib/postgresql/config/pg_hba.conf'
+    listen_addresses = '*'
+    shared_preload_libraries=''

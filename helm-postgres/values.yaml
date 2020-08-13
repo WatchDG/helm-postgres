@@ -1,0 +1,9 @@
+#
+namespace: "postgres"
+application: "postgres"
+#
+db_database: "postgres"
+db_admin_user: "postgres"
+db_admin_password: "postgres"
+#
+image: "postgres:12-alpine"

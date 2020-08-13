@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.application }}
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.application }}
+  serviceName: {{ .Values.application }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.application }}
+    spec:
+      volumes:
+        - name: donor-config
+          configMap:
+            name: {{ .Values.application }}
+        - name: {{ .Values.application }}-config
+          emptyDir: {}
+      initContainers:
+        - name: init
+          image: alpine
+          volumeMounts:
+            - name: donor-config
+              mountPath: /from/config
+            - name: {{ .Values.application }}-config
+              mountPath: /to/config
+          command:
+            - sh
+            - -c
+            - cp -r /from/config/. /to/config
+      containers:
+        - name: postgres
+          image: {{ .Values.image }}
+          args:
+            - --config_file=/var/lib/postgresql/config/postgresql.conf
+          envFrom:
+            - secretRef:
+                name: {{ .Values.application }}
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: {{ .Values.application }}-config
+              mountPath: /var/lib/postgresql/config
+            - name: {{ .Values.application }}-data
+              mountPath: /var/lib/postgresql/data
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 2Gi
+            limits:
+              cpu: 1000m
+              memory: 2Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ .Values.application }}-data
+        namespace: {{ .Values.namespace }}
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
