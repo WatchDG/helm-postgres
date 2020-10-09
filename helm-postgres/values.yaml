@@ -1,9 +1,15 @@
-#
+##################################################
 namespace: "postgres"
 application: "postgres"
-#
+##################################################
 db_database: "postgres"
 db_admin_user: "postgres"
 db_admin_password: "postgres"
-#
-image: "postgres:12-alpine"
+##################################################
+image: "postgres:13-alpine"
+##################################################
+storage: "10Gi"
+##################################################
+#resources:
+#  cpu: "1000m"
+#  memory: "2Gi"

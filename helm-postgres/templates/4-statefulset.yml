@@ -46,13 +46,15 @@ spec:
               mountPath: /var/lib/postgresql/config
             - name: {{ .Values.application }}-data
               mountPath: /var/lib/postgresql/data
+          {{- if .Values.resources}}
           resources:
             requests:
-              cpu: 1000m
-              memory: 2Gi
+              cpu: {{.Values.resources.cpu}}
+              memory: {{.Values.resources.memory}}
             limits:
-              cpu: 1000m
-              memory: 2Gi
+              cpu: {{.Values.resources.cpu}}
+              memory: {{.Values.resources.memory}}
+          {{- end}}
   volumeClaimTemplates:
     - metadata:
         name: {{ .Values.application }}-data
@@ -62,4 +64,4 @@ spec:
           - ReadWriteOnce
         resources:
           requests:
-            storage: 10Gi
+            storage: {{.Values.storage}}
