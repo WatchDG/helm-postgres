@@ -1,7 +1,6 @@
 # helm-postgres
-helm postgres
 
-# helm-influxdb
+helm for PostgreSQL
 
 ## install
 ```shell script
